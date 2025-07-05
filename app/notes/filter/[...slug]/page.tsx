@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { fetchNotes } from '@/lib/api';
 import NotesClient from './Notes.client';
 
@@ -5,13 +6,14 @@ interface NotesProps {
   params: Promise<{ slug: string[] }>;
 }
 
-export async function generateMetadata({ params }: NotesProps) {
+// ✅ Генерація метаданих з правильною типізацією
+export async function generateMetadata({ params }: NotesProps): Promise<Metadata> {
   const { slug } = await params;
   const category = slug[0];
+
   return {
     title: `Notehub - ${category}`,
     description: `Explore all notes in the ${category} category. Stay organized and easily find what matters most`,
-    url: `https://08-zustand-three.vercel.app/notes/filter/${category}`,
     openGraph: {
       title: `Notehub - ${category}`,
       description: `Explore all notes in the ${category} category. Stay organized and easily find what matters most`,
@@ -30,6 +32,7 @@ export async function generateMetadata({ params }: NotesProps) {
   };
 }
 
+// ✅ Основний компонент сторінки
 export default async function Notes({ params }: NotesProps) {
   const { slug } = await params;
   const tag = slug[0] === 'All' ? undefined : slug[0];

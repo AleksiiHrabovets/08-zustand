@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { fetchNoteById } from '@/lib/api';
 import NoteDetailsClient from './NoteDetails.client';
@@ -6,13 +7,14 @@ interface NoteDetailsProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: NoteDetailsProps) {
+// ✅ Додаємо анотацію типу: Promise<Metadata>
+export async function generateMetadata({ params }: NoteDetailsProps): Promise<Metadata> {
   const { id } = await params;
   const note = await fetchNoteById(parseInt(id));
+
   return {
     title: `Notehub - ${note.title}`,
     description: `${note.content}`,
-    url: `https://08-zustand-three.vercel.app/notes/${note.id}`,
     openGraph: {
       title: `Notehub - ${note.title}`,
       description: `${note.content}`,
@@ -31,6 +33,7 @@ export async function generateMetadata({ params }: NoteDetailsProps) {
   };
 }
 
+// ✅ Основна сторінка з клієнтською частиною та префетчем
 export default async function NoteDetails({ params }: NoteDetailsProps) {
   const { id } = await params;
   const queryClient = new QueryClient();
